@@ -14,7 +14,7 @@ import java.util.List;
  message_id (primary key) : type int
  posted_by (foregin key) : type int
  message_text : type varchar(255)
- time_posted_epoch : type bigint
+ time_posted_epoch : type long
 
  what information should i get or insert into this table
     create a message (insert)
@@ -97,7 +97,7 @@ public class MessageDAO {
 
     
     // Select all messages from a user
-    public List<Message> getAllMessageFromUser(int user_id) {
+    public List<Message> getAllMessagesFromUser(int user_id) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
         try {
@@ -136,6 +136,26 @@ public class MessageDAO {
         } catch(SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public boolean checkUser(int user_id) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "select count(*) from message where posted_by = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            //set method(s)
+            preparedStatement.setInt(1, user_id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
     // Inserting a message 

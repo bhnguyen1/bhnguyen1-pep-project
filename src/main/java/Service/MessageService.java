@@ -3,6 +3,9 @@ package Service;
 import Model.Message;
 import DAO.MessageDAO;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /*
  Purpose of this class is to contain business logic between web layer and DAO layer 
 
@@ -38,5 +41,73 @@ import DAO.MessageDAO;
     * success
  */
 public class MessageService {
-    
+   private MessageDAO messageDAO;
+
+   public MessageService() { //constructor
+       messageDAO = new MessageDAO();
+   }
+
+   public MessageService(MessageDAO messageDAO) { //constructor for when MessageDao is provided
+       this.messageDAO = messageDAO;
+   }
+   
+   //ask if all of these checks should return null
+   public Message updateMessage(int message_id, Message newMessage) {
+      if(messageDAO.getMessage(message_id) == null) {
+         System.out.println("Message does not exist!");
+         return null;
+      }
+      if(newMessage.getMessage_text().isEmpty() || newMessage.getMessage_text().length() > 255) {
+         System.out.println("Invalid Message!");
+         return null;
+      }
+      messageDAO.updateMessage(message_id, newMessage);
+      return new Message(message_id, newMessage.getPosted_by(), newMessage.getMessage_text(), newMessage.getTime_posted_epoch());
+   }
+
+   //only need them to look if there is more to be added
+   public Message retrieveMessage(int message_id) {
+      Message message = messageDAO.getMessage(message_id);
+      if(message == null) {
+         System.out.println("Message does not exist!");
+      } 
+      return message;
+   }
+
+   public List<Message> retrieveAllMessage() {
+      return messageDAO.getMessages();
+   }
+
+   //look here if logic is wrong for retrieving user message
+   public List<Message> retrieveUserMessages(int user_id) {
+      if(messageDAO.checkUser(user_id) == false) {
+         System.out.println("User does not exist");
+         return null;
+      } else {
+         return messageDAO.getAllMessagesFromUser(user_id);
+      }
+   }
+
+   //ask mentor about logic
+   public boolean deleteMessage(Message message) {
+      if(messageDAO.getMessage(message.getMessage_id()) == null) {
+         return false;
+      } else {
+         messageDAO.deleteMessage(message.getMessage_id());
+         return true;
+      }
+   }
+
+   //look at the logic done here later (base script)
+   public Message makeMessage(Message message) {
+      if(messageDAO.checkUser(message.getPosted_by()) == false) {
+         System.out.println("User does not exist");
+         return null;
+      }
+      if(message.getMessage_text().isEmpty() || message.getMessage_text().length() > 255) {
+         System.out.println("Invalid Text");
+         return null;
+      }
+      return messageDAO.insertMessage(message);
+   }
 }

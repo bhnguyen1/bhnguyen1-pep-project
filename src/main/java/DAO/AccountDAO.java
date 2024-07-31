@@ -16,10 +16,35 @@ import java.sql.*;
  what information should i get or insert into this table
     register a new user with password (insert)
     -------------------------------------------------------------------
+    check if account exists (select)
+    -------------------------------------------------------------------
     login into account with password (select) 
 */
 
 public class AccountDAO {
+    /*
+     * Checking the account exists by username 
+    */
+    public boolean checkAccount(String username) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "select count(*) from account where username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            //setString methods
+            preparedStatement.setString(1, username);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
     /* 
      * Inserting a new user
      * Based off the assumption that account_id is an automatically generated because it is set to auto_increment
@@ -61,7 +86,6 @@ public class AccountDAO {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
 
-            preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()) {
                 Account account = new Account(rs.getInt("account_id"),

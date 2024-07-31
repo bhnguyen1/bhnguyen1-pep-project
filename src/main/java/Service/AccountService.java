@@ -22,5 +22,36 @@ import DAO.AccountDAO;
 */
 
 public class AccountService {
+    private AccountDAO accountDAO;
+
+    public AccountService() { //constructor
+        accountDAO = new AccountDAO();
+    }
+
+    public AccountService(AccountDAO accountDAO) { //constructor for when AccountDAO is provided
+        this.accountDAO = accountDAO;
+    }
+
+    //also check the logic of this
+    public Account loginIntoAccount(String username, String password) {
+        Account account = accountDAO.getAccountWithPassword(username, password);
+        if (account != null) {
+            return account;
+        } else {
+            return null;
+        }
+    }
     
+    // ask if the logic here is okay
+    public Account addNewAccount(Account account) { 
+        if(accountDAO.checkAccount(account.getUsername())) {
+            System.out.println("Username already exists!");
+            return null;
+        }
+        if(account.getUsername().isEmpty() || account.getPassword().length() < 4) {
+            System.out.println("Invalid username or password!");
+            return null; 
+        } 
+        return accountDAO.insertAccount(account);
+    }
 }
