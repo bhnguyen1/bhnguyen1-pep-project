@@ -4,7 +4,6 @@ import Model.Message;
 import DAO.MessageDAO;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /*
  Purpose of this class is to contain business logic between web layer and DAO layer 
@@ -53,7 +52,8 @@ public class MessageService {
    
    //ask if all of these checks should return null
    public Message updateMessage(int message_id, Message newMessage) {
-      if(messageDAO.getMessage(message_id) == null) {
+      Message message = messageDAO.getMessage(message_id);
+      if(message == null) {
          System.out.println("Message does not exist!");
          return null;
       }
@@ -62,7 +62,7 @@ public class MessageService {
          return null;
       }
       messageDAO.updateMessage(message_id, newMessage);
-      return new Message(message_id, newMessage.getPosted_by(), newMessage.getMessage_text(), newMessage.getTime_posted_epoch());
+      return new Message(message_id, message.getPosted_by(), newMessage.getMessage_text(), message.getTime_posted_epoch());
    }
 
    //only need them to look if there is more to be added
