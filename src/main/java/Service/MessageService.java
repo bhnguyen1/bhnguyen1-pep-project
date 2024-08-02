@@ -3,6 +3,7 @@ package Service;
 import Model.Message;
 import DAO.MessageDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -84,7 +85,12 @@ public class MessageService {
          System.out.println("User does not exist");
          return null;
       } else {
-         return messageDAO.getAllMessagesFromUser(user_id);
+         List<Message> messages = messageDAO.getAllMessagesFromUser(user_id);
+         if(messages.isEmpty()) {
+            return new ArrayList<>();
+         } else {
+            return messageDAO.getAllMessagesFromUser(user_id);
+         }
       }
    }
 

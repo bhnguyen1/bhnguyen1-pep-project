@@ -44,11 +44,7 @@ public class SocialMediaController {
     private void getMessagesByUserHandler(Context ctx) throws JsonProcessingException {
         int userID = Integer.parseInt(ctx.pathParam("account_id"));
         List<Message> userMessages = messageService.retrieveUserMessages(userID);
-        if(userMessages == null) {
-            ctx.status(200).json(userMessages);
-        } else {
-            ctx.json(userMessages);
-        }
+        ctx.status(200).json(userMessages);
     }
 
     private void patchMessageHandler(Context ctx) throws JsonProcessingException {
@@ -70,6 +66,7 @@ public class SocialMediaController {
         if(message == null) {
             ctx.status();
         } else {
+        
             ctx.json(message);
         }
     }
