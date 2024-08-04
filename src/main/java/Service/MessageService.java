@@ -83,14 +83,13 @@ public class MessageService {
    public List<Message> retrieveUserMessages(int user_id) {
       if(messageDAO.checkUser(user_id) == false) {
          System.out.println("User does not exist");
-         return null;
+         return new ArrayList<>();
+      } 
+      List<Message> messages = messageDAO.getAllMessagesFromUser(user_id);
+      if(messages.isEmpty()) {
+         return new ArrayList<>();
       } else {
-         List<Message> messages = messageDAO.getAllMessagesFromUser(user_id);
-         if(messages.isEmpty()) {
-            return new ArrayList<>();
-         } else {
-            return messageDAO.getAllMessagesFromUser(user_id);
-         }
+         return messageDAO.getAllMessagesFromUser(user_id);
       }
    }
 
